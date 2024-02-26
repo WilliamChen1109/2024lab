@@ -7,7 +7,7 @@
         GPIO_SetMode(PA, BIT1, GPIO_MODE_INPUT); // SW2
 
         GPIO_SetMode(PG, BIT2, GPIO_MODE_INPUT);  // Up
-        GPIO_SetMode(PC, BIT10, GPIO_MODE_INPUT); //Down
+        GPIO_SetMode(PC, BIT10, GPIO_MODE_INPUT); // Down
         GPIO_SetMode(PG, BIT3, GPIO_MODE_INPUT); // Center
 
         // Output Pin Set
