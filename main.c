@@ -1,4 +1,4 @@
-    #include "M480.h";
+    #include "M480.h"
     #define GPIO_PIN_MAX 16UL
 
     int32_t main(void){
@@ -26,19 +26,11 @@
             else if(!PG2 && !PC10){
                 PH6 = 1;
                 PH7 = 1;
-            }
+            } 
             else{
                 PH6 = (PA0 == 0) ? 0 : 1;
                 PH7 = (PA1 == 0) ? 0 : 1;
             }        
         }    
     }
-
-    void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode){
-        uint32_t i;
-        for(i = 0ul; i < GPIO_PIN_MAX ; i++){
-            if((u32PinMask & (1ul << i)) == (1ul << i)){
-                port->MODE = (port->MODE & ~(0x3ul << (i << 1))) | (u32Mode << (i << 1));
-            }
-        }
-    }
+		 
