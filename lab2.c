@@ -11,6 +11,7 @@
 #define SW_UP			PC9			//UP					JoyStick
 #define SW_DOWN		PG4			//DOWN				JoyStick
 #define SW_CTR		PG3			//CENTER			JoyStick
+#pragma anon_union
 
 /* global variable define */
 uint32_t timecount;
@@ -18,14 +19,17 @@ uint32_t sec = 0;
 uint32_t hour = 0;
 uint32_t min = 0;
 char buf[20];
-		
+//uint32_t SpeedCtl;
 void Clock_Task(void);
 void clock_init(void);
 void clock_tick(void);
 void LED_showing(uint32_t SpeedCtl);
 void GPIO_init(void);
 uint32_t JoyStick(unsigned char BTN_state);
-
+#if defined(__CC_ARM)
+#pragma anon_unions
+#elif defined(__ICCARM__)
+#endif
 typedef union{
 	struct{
 		unsigned UP		:1;
@@ -54,7 +58,7 @@ int main(void)
 		/* Opem GUI display */
 		Display_Init();
 		
-		uint32_t SpeedCtl = 10000;	//initialize LED toogle speed 1Hz
+//		uint32_t SpeedCtl = 10000;	//initialize LED toogle speed 1Hz
 		
     while(1)
 		{
@@ -62,11 +66,14 @@ int main(void)
 				char clock_buf[20];
 			
 				joystick_pins.UP = SW_UP;	//SW_UP
+                joystick_pins.DOWN = SW_DOWN;	//SW_DOWN
+                joystick_pins.CTR = SW_CTR;	//SW_CTR;
 				//SW_DOWN;
 				//SW_CTR;
 			
 				/* Joystick CTL */
-
+                
+        LED_showing(JoyStick(joystick_pins.B));
 			
 				/* LED and clock function */
 				//LED toggle
@@ -124,26 +131,26 @@ void clock_tick(void)
     sprintf(buf, "%02d:%02d:%02d", hour, min, sec);
     Display_buf(buf, 100, 100);
 }
-
+static uint32_t old_timecount = 0;
+static uint32_t SpeedCtl = 10000;
 /* JoyStick control */
 uint32_t JoyStick(unsigned char BTN_state)
 {
-		static uint32_t old_timecount = 0;
-		static uint32_t SpeedCtl = 10000;
+		
 		
 		//if()default : 0.1s
 				//return SpeedCtl;
-		
+		if(timecount-old_timecount < 1000)return SpeedCtl;
 		old_timecount = timecount;	//update the old time
 		
 		switch(BTN_state)
 		{
 			case 0x06:	//press the up button
-                if(SpeedCtl > MinSpeed)
+                if(SpeedCtl > MaxSpeed)
                     SpeedCtl -= 1000;
 				break;
 			case 0x05:	//press the down button
-                if(SpeedCtl < MaxSpeed)
+                if(SpeedCtl < MinSpeed)
                     SpeedCtl += 1000;
 				break;
 			case 0x03:	//press the center button
@@ -161,31 +168,11 @@ uint32_t JoyStick(unsigned char BTN_state)
 void LED_showing(uint32_t SpeedCtl)
 {
 		static uint32_t old_timecount = 0;
-	  static unsigned char f=0x01;
+static unsigned char f=0x01;
 		if(timecount-old_timecount >= SpeedCtl){
-
+      f^=0x01;
+			PH6=(f)?1:0;
+			PH7=(f)?0:1;
 			old_timecount =timecount;
 		}  	
-}
-
-void TMR0_Initial (void){
-    CLK->APBCLK0 |= CLK_APBCLK0_TMR0CKEN_Msk;
-    CLK->CLKSEL1 &= ~CLK_CLKSEL1_TMR0SEL_Msk;
-    CLK->CLKSEL1 |= CLK_CLKSEL1_TMR0SEL_HXT;
-    TIMER0->CTL &= TIMER_CTL_PSC_Msk;
-    TIMER0->CTL |= 0x00 << TIMER_CTL_PSC_Pos;
-    TIMER0->CTL & TIMER CTL_OPMODE_Msk;
-    TIMER0->CTL = TIMER_PERIODIC_MODE;
-    //10kHz
-    TIMER0->CMP = 1200UL;//Time-out period
-
-    NVIC_EnableIRQ (TMR0_IRQn);
-    TIMER0->CTL = TIMER CTL_INTEN_Msk;
-    TIMER0->CTL = TIMER_CTL_CNTEN_Msk;
-    
-}
-
-void TMR0_IRQHandler(void){
-    if(TIMER_GetIntFlag(TIMER0))timecount++;
-    TIMER_ClearIntFlag(TIMER0);
 }
