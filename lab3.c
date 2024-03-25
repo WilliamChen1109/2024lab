@@ -64,6 +64,9 @@ int main(void){
 			Btn_OneShotClear(0x04);
             if(speed < MaxSpeed)
                 speed++;
+            else if(speed == 10000){
+                speed = 1;
+            }
 		}
 		if(Btn_IsOneShot(0x08) == 0x08){
             //speed down
@@ -71,6 +74,9 @@ int main(void){
 			Btn_OneShotClear(0x08);
             if(speed > MinSpeed)
                 speed--;
+            else if(speed == 10000){
+                speed = 1;
+            }
 		}
 					
 		/* Step motor output */
