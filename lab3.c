@@ -62,21 +62,21 @@ int main(void){
             //speed up
 			GUI_Clear();
 			Btn_OneShotClear(0x04);
-            if(speed < MaxSpeed)
-                speed++;
-            else if(speed == 10000){
+            if(speed == 10000){
                 speed = 1;
             }
+            else if(speed < MaxSpeed)
+                speed++;
 		}
 		if(Btn_IsOneShot(0x08) == 0x08){
             //speed down
 			GUI_Clear();
 			Btn_OneShotClear(0x08);
-            if(speed > MinSpeed)
-                speed--;
-            else if(speed == 10000){
+            if(speed == 10000){
                 speed = 1;
             }
+            else if(speed > MinSpeed)
+                speed--;
 		}
 					
 		/* Step motor output */
@@ -88,7 +88,13 @@ int main(void){
 		StepMtr_Task(dir, speedCTL);
 				
         //writ motor state buffer
-		sprintf(SPD_buf,"speed : %02d rpm" , speed*6);//6~102
+        if(speed == 10000){
+            sprintf(SPD_buf,"speed : %02d rpm" , 0);
+        }
+        else{
+            sprintf(SPD_buf,"speed : %02d rpm" , speed*6);//6~102
+        }
+		
         //writ direction buffer
 
         //Display_buf(, 1, 1);motor state
