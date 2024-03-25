@@ -50,7 +50,7 @@ int main(void){
             //stop
 			GUI_Clear();
 			Btn_OneShotClear(0x01);
-            speed = 10000;
+            speed = 0;
 		}
 		if(Btn_IsOneShot(0x02) == 0x02){
             //direction control
@@ -62,20 +62,16 @@ int main(void){
             //speed up
 			GUI_Clear();
 			Btn_OneShotClear(0x04);
-            if(speed == 10000){
-                speed = 1;
-            }
-            else if(speed < MaxSpeed)
+            if(speed < MaxSpeed)
                 speed++;
 		}
 		if(Btn_IsOneShot(0x08) == 0x08){
             //speed down
 			GUI_Clear();
 			Btn_OneShotClear(0x08);
-            if(speed == 10000){
-                speed = 1;
-            }
-            else if(speed > MinSpeed)
+			if(speed == 0)
+				speed = 1;
+      else if(speed > MinSpeed)
                 speed--;
 		}
 					
@@ -88,24 +84,18 @@ int main(void){
 		StepMtr_Task(dir, speedCTL);
 				
         //writ motor state buffer
-        if(speed == 10000){
-            sprintf(SPD_buf,"speed : %02d rpm" , 0);
-        }
-        else{
-            sprintf(SPD_buf,"speed : %02d rpm" , speed*6);//6~102
-        }
-		
+		sprintf(SPD_buf,"speed : %02d rpm" , speed*6);//6~102
         //writ direction buffer
 
         //Display_buf(, 1, 1);motor state
-        if(speed == 10000){
-            Display_buf("Stopped", 1, 1);
+        if(speed == 0){
+					Display_buf("motor state : Stopped", 1, 1);
         }
         else{
-            Display_buf("Running", 1, 1);
+					Display_buf("motor state : Running", 1, 1);
         }
 
-		Display_buf(SPD_buf, 1, 25);
+				Display_buf(SPD_buf, 1, 25);
         if(dir)
             Display_buf("direction : Clockwise", 1, 49);
         else
