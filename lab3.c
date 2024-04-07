@@ -48,31 +48,31 @@ int main(void){
 
 		if(Btn_IsOneShot(0x01) == 0x01){
             //stop
-			GUI_Clear();
-			Btn_OneShotClear(0x01);
+			GUI_Clear(); // clear windows
+			Btn_OneShotClear(0x01); //clear oneshot flag
             speed = 0;
 		}
 		if(Btn_IsOneShot(0x02) == 0x02){
             //direction control
-			dir ^= 0x01;
-			GUI_Clear();
-			Btn_OneShotClear(0x02);
+			dir ^= 0x01; //xor to dir
+			GUI_Clear(); //clear windows
+			Btn_OneShotClear(0x02); //clear oneshot flag
 		}				
 		if(Btn_IsOneShot(0x04) == 0x04){
             //speed up
-			GUI_Clear();
-			Btn_OneShotClear(0x04);
+			GUI_Clear();//clear windows
+			Btn_OneShotClear(0x04);//clear oneshot flag
             if(speed < MaxSpeed)
                 speed++;
 		}
 		if(Btn_IsOneShot(0x08) == 0x08){
             //speed down
-			GUI_Clear();
-			Btn_OneShotClear(0x08);
-			if(speed == 0)
+			GUI_Clear(); //clear windows
+			Btn_OneShotClear(0x08); //clear oneshot flag
+			if(speed == 0) //let speed not to be 0
 				speed = 1;
       else if(speed > MinSpeed)
-                speed--;
+                speed--;// let speed won't get over minspeed
 		}
 					
 		/* Step motor output */
