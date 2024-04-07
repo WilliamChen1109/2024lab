@@ -88,13 +88,14 @@ int main(void){
         //writ direction buffer
 
         //Display_buf(, 1, 1);motor state
+								//display motor state
         if(speed == 0){
 					Display_buf("motor state : Stopped", 1, 1);
         }
         else{
 					Display_buf("motor state : Running", 1, 1);
         }
-
+								//display direction
 				Display_buf(SPD_buf, 1, 25);
         if(dir)
             Display_buf("direction : Clockwise", 1, 49);
