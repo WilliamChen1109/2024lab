@@ -29,6 +29,7 @@ int main(void){
 	char M487sensor_temp_value_buf[20];
 	char thermistor_temp_value_buf[20];
 	char speed_buf[20];
+	char flag_buf[20];
     uint32_t  speedCTL;
 	
 	/* Init System, peripheral clock */
@@ -57,12 +58,12 @@ int main(void){
     mode = 0;
 
 	while(1){
-        if(Btn_IsDown(0x01) && Btn_IsDown(0x02) && flag){
+        if(Btn_IsDown(0x01) && Btn_IsDown(0x02) && flag == 0x01){
             mode ^= 0x01;
-            flag = 0;
+            flag = 0x00;
         }
-        else if(Btn_IsUp(0x01) == 0x00 && Btn_IsUp(0x02) == 0x00){
-            flag = 1;
+        else if(Btn_IsDown(0x01) == 0x00 && Btn_IsDown(0x02) == 0x00){
+            flag = 0x01;
         }
 
         if(Btn_IsOneShot(0x01) == 0x01){
@@ -121,7 +122,7 @@ int main(void){
 		sprintf(speed_buf,"Speed : %02d rpm" , speed*6);//6~102
 		Display_buf(speed_buf, 1, 118);
         //
-		sprintf(flag_buf,"flag : %02d" , mode);//6~102
+		sprintf(flag_buf,"mode : %02d" , mode);//6~102
 		Display_buf(flag_buf, 1, 157);
 
 		/* Drivers */
