@@ -201,10 +201,11 @@ void clock_tick(void){
 	if (sec == 60){
         sec = 0;
         min++; // update minute
+		SaveAge();
     if (min == 60){
             min = 0;
             hour++; // update hour
-            if (hour == 24) hour = 0; // reset hour when it is 24
+            if (hour == 24) hour = 0; // reset hour when it is 24 haha py
         }
     }
     sprintf(buf, "%02d", min); // clock buffer
