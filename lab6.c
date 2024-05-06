@@ -208,7 +208,7 @@ void clock_tick(void){
         }
     }
     sprintf(buf, "%02d", min); // clock buffer
-    Display_buf(buf, 100, 100); // display clock
+    Display_buf(buf, 240, 1); // display clock
 }
 
 void ClearEEPROM()
