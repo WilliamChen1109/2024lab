@@ -201,6 +201,7 @@ void clock_tick(void){
 	if (sec == 60){
         sec = 0;
         min++; // update minute
+		SaveDataToEEPROM();
     if (min == 60){
             min = 0;
             hour++; // update hour
@@ -347,8 +348,11 @@ void UART1_speed_control (void){
 						else {			
 							baudrate = atoi(CMD);
                             ChangeBaudRate(baudrate);
-                            sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
+                            sprintf(sendbuf, "Get CMD: BAUD=%d \r\n", atoi(CMD));
 					        StrPush(sendbuf);
+							UART1_TxData();
+							CMDstate = 0;
+							CMDlen = 0;
 						}
 						break;
 				}	
