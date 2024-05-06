@@ -36,6 +36,7 @@ char sendbuf[100];
 char baudrate_buf[20];
 char CMD[20];
 char *BAUDCMD = "BAUD=";
+char buf[20];
 
 unsigned int CMD_NUM;
 
@@ -345,7 +346,7 @@ void UART1_speed_control (void){
 						}
 						else {			
                             CMD[CMDlen++] = 0x00;
-                            sscanf(CMD, "%d", $CMD_NUM);
+                            sscanf(CMD, "%d", CMD_NUM);
                             sprintf(sendbuf, "Get CMD: BAUD=%d \r\n", CMD_NUM);
                             baudrate = CMD_NUM;
                             UART1_TxData();
