@@ -63,16 +63,14 @@ typedef union{
 
 EEPROM_table eepromData;
 
-int main(void)
-{	
-	
+int main(void){	
 	/* local variable define */
 	char ADC_value_buf[20];
 	char M487sensor_temp_value_buf[20];
 	char thermistor_temp_value_buf[20];
 	char speed_buf[20];
 	char mode_buf[20];
-  char receive_buf[20];
+    char receive_buf[20];
 	char clock_buf[20]; 
 	
 	uint8_t mode = 0;	
@@ -100,7 +98,7 @@ int main(void)
 	UART1_Initial();
 	
 	/*Init Step Motor */
-  StepMtr_Initial();	
+    StepMtr_Initial();	
 	
 	/*Init I2C_EEPROM*/
 	I2C_EEPROM_Init();
@@ -175,9 +173,9 @@ int main(void)
 		sprintf(receive_buf, "received: %c", c);
 		Display_buf(receive_buf, 1, 196);
 		
-		/**************************/
-		/***Enter Your Code Here***/
-		/**************************/
+        // Code here
+		sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
+		Display_buf(sendbuf, 1, 200);
 
 		/* Drivers */
 		/* Motor Task */
@@ -326,9 +324,10 @@ void UART1_speed_control (void){
 							CMD[CMDlen++] = c;
 						}
 						else {			
-							/**************************/
-							/***Enter Your Code Here***/
-							/**************************/
+							boudrate = atoi(CMD);
+                            ChangeBaudRate(baudrate);
+                            sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
+					        StrPush(sendbuf);
 						}
 						break;
 				}	
