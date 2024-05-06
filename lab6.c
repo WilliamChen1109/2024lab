@@ -36,6 +36,7 @@ char sendbuf[100];
 char baudrate_buf[20];
 char CMD[20];
 char *BAUDCMD = "BAUD=";
+char buf[20];
 
 unsigned int CMD_NUM;
 
@@ -344,7 +345,7 @@ void UART1_speed_control (void){
 							CMD[CMDlen++] = c;
 						}
 						else {			
-							boudrate = atoi(CMD);
+							baudrate = atoi(CMD);
                             ChangeBaudRate(baudrate);
                             sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
 					        StrPush(sendbuf);
