@@ -201,7 +201,7 @@ void clock_tick(void){
 	if (sec == 60){
         sec = 0;
         min++; // update minute
-		SaveDataToEEPROM();
+		I2C_EEPROM_Write(0x0008, min);
     if (min == 60){
             min = 0;
             hour++; // update hour
