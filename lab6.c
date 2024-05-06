@@ -36,7 +36,6 @@ char sendbuf[100];
 char baudrate_buf[20];
 char CMD[20];
 char *BAUDCMD = "BAUD=";
-char buf[20];
 
 unsigned int CMD_NUM;
 
@@ -201,7 +200,6 @@ void clock_tick(void){
 	if (sec == 60){
         sec = 0;
         min++; // update minute
-		I2C_EEPROM_Write(0x0008, min);
     if (min == 60){
             min = 0;
             hour++; // update hour
@@ -209,7 +207,7 @@ void clock_tick(void){
         }
     }
     sprintf(buf, "%02d", min); // clock buffer
-    Display_buf(buf, 200, 1); // display clock
+    Display_buf(buf, 100, 100); // display clock
 }
 
 void ClearEEPROM()
@@ -346,13 +344,18 @@ void UART1_speed_control (void){
 							CMD[CMDlen++] = c;
 						}
 						else {			
-							baudrate = atoi(CMD);
+                            CMD[CMDlen++] = 0x00;
+                            sscanf(CMD, "%d", $CMD_NUM);
+                            sprintf(sendbuf, "Get CMD: BAUD=%d \r\n", CMD_NUM);
+                            baudrate = CMD_NUM;
+                            UART1_TxData();
+                            CMDstate = 0;
+                            CMDlen = 0;
                             ChangeBaudRate(baudrate);
-                            sprintf(sendbuf, "Get CMD: BAUD=%d \r\n", atoi(CMD));
-					        StrPush(sendbuf);
-							UART1_TxData();
-							CMDstate = 0;
-							CMDlen = 0;
+							// boudrate = atoi(CMD);
+                            // ChangeBaudRate(baudrate);
+                            // sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
+					        // StrPush(sendbuf);
 						}
 						break;
 				}	
