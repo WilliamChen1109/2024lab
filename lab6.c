@@ -49,6 +49,7 @@ void ReadDataFromEEPROM	(void);
 int ConfigWithEEPROM (void);
 void SaveAge (void);
 void ClearEEPROM(void);
+void clock_tick(void);
 
 typedef union{
 	struct{
@@ -174,8 +175,7 @@ int main(void){
 		Display_buf(receive_buf, 1, 196);
 		
         // Code here
-		sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
-		Display_buf(sendbuf, 1, 200);
+		clock_tick();
 
 		/* Drivers */
 		/* Motor Task */
@@ -184,10 +184,30 @@ int main(void){
 		ADC_Task();
 		/* Scan button*/
 		BTN_task();
-			
-
-		
 	}
+}
+
+void clock_tick(void){
+	static uint32_t old_timecount = 0;
+	
+	if((uint32_t)(timecount - old_timecount) < 10000)//default SpeedCtl : 1Hz
+		return;
+		
+		old_timecount = timecount;	//update the old time
+		sec++;
+
+	//time update
+	if (sec == 60){
+        sec = 0;
+        min++; // update minute
+    if (min == 60){
+            min = 0;
+            hour++; // update hour
+            if (hour == 24) hour = 0; // reset hour when it is 24
+        }
+    }
+    sprintf(buf, "%02d", min); // clock buffer
+    Display_buf(buf, 100, 100); // display clock
 }
 
 void ClearEEPROM()
@@ -324,7 +344,7 @@ void UART1_speed_control (void){
 							CMD[CMDlen++] = c;
 						}
 						else {			
-							baudrate = atoi(CMD);
+							boudrate = atoi(CMD);
                             ChangeBaudRate(baudrate);
                             sprintf(sendbuf, "Baudrate: %d \r\n", atoi(CMD));
 					        StrPush(sendbuf);
